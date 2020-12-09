@@ -1,28 +1,32 @@
-const oracledb = require('oracledb')
-const config = {
-  user: 'eddi',
-  password: 'EDDI2020',
-  connectString: '(DESCRIPTION =(LOAD_BALANCE = ON)(FAILOVER = ON)(ADDRESS =(PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))(ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XE)(FAILOVER_MODE=(TYPE=SELECT)(METHOD = BASIC))))'
-}
+const express = require('express');
 
-async function getEmployee (empId) {
-  let conn
+const app = express();
+const BD = require('./database');
 
-  try {
-    conn = await oracledb.getConnection(config)
+//Settings
+app.set('port', process.env.PORT || 3000);
 
-    const result = await conn.execute(
-      'SELECT * FROM CUSTOMERS'
-    )
+//Middlewares
+app.use(express.json());
 
-    console.log(result.rows[0])
-  } catch (err) {
-    console.log('Ouch!', err)
-  } finally {
-    if (conn) { // conn assignment worked, need to close
-      await conn.close()
-    }
-  }
-}
+//Routes
+app.use(require('./routes/customers'));
+app.use(require('./routes/employees'));
 
-getEmployee(101)
+app.get('/', async (req, res) => {
+  sql = "select * from CUSTOMERS;";
+
+  let result = await BD.Open(sql);
+  Users = [];
+
+  result.rows.map(user => {
+      console.log(user)
+  })
+
+  res.json(Users);
+})
+
+// Starting the server
+app.listen(app.get('port'), () => {
+  console.log(`Server on port ${app.get('port')}`);
+});

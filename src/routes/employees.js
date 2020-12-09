@@ -1,15 +1,17 @@
-const express = require('express');
-const router = express.Router();
+const { Router } = require('express');
+const router = Router();
+const BD = require('../database');
 
-const mysqlConnection  = require('../database.js');
+//READ
+router.get('/getUsers', async (req, res) => {
+    sql = "select * from CUSTOMERS;";
 
-// GET all Employees
-router.get('/', (req, res) => {
-  mysqlConnection.query('SELECT * FROM employee', (err, rows, fields) => {
-    if(!err) {
-      res.json(rows);
-    } else {
-      console.log(err);
-    }
-  });  
-});
+    let result = await BD.Open(sql, [], false);
+    Users = [];
+
+    result.rows.map(user => {
+        console.log(user)
+    })
+
+    // res.json(Users);
+})
