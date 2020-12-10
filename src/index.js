@@ -1,30 +1,21 @@
+  
 const express = require('express');
-
 const app = express();
-const BD = require('./database');
 
-//Settings
+var customers = require('./routes/customers')
+
+// Settings
 app.set('port', process.env.PORT || 3000);
 
-//Middlewares
+// Middlewares
 app.use(express.json());
 
-//Routes
-app.use(require('./routes/customers'));
-app.use(require('./routes/employees'));
+// Routes
+app.use('/customers', customers);
 
-app.get('/', async (req, res) => {
-  sql = "select * from CUSTOMERS;";
-
-  let result = await BD.Open(sql);
-  Users = [];
-
-  result.rows.map(user => {
-      console.log(user)
-  })
-
-  res.json(Users);
-})
+app.get('/', function (req, res) {
+  res.send('root');
+});
 
 // Starting the server
 app.listen(app.get('port'), () => {

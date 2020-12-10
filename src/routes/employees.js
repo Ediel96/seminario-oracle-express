@@ -1,10 +1,10 @@
 const { Router } = require('express');
 const router = Router();
-const BD = require('../database');
+const BD = require('../config/database');
 
 //READ
 router.get('/getUsers', async (req, res) => {
-    sql = "select * from CUSTOMERS;";
+    sql = "";
 
     let result = await BD.Open(sql, [], false);
     Users = [];
